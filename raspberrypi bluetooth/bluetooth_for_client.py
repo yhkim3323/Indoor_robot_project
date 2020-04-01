@@ -2,9 +2,9 @@
 import sys
 sys.path.append("/usr/lib/python3/dist-packages")
 import socket
-import smbus
 import time
 
+## 블루투스 device_ID(robot에 부착되어 있는것)
 host = 'B8:27:EB:D5:0C:39'
 port = 1
 
