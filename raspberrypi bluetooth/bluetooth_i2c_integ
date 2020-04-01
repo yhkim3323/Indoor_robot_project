@@ -1,0 +1,64 @@
+import sys
+sys.path.append("/usr/lib/python3/dist-packages")
+import smbus
+import time
+import socket
+
+host = 'B8:27:EB:D5:0C:39'
+port = 1
+addr = 4
+X = 0
+Y = 0
+
+class blu_i2c(object):
+    I2C_BUS_NUM = 1
+    
+        
+    def __init__(self):
+        self.master = smbus.SMBus(self.I2C_BUS_NUM)
+        self.slave_addr_list = [4, 5, 6]
+        
+        
+    def run(self):
+
+        me = self.master
+        on_off = True
+
+        with socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM) as s:
+            s.connect((host, port))
+            while 1 :
+                try:
+                
+                    #data = A
+                    #s.sendall(data.encode())
+                    #s.sendall(data)
+                    #res = s.recv(1024)
+
+                    #me.write_byte(addr, int(on_off))
+                    #value_byte = me.read_byte(addr)
+                    value_byte = me.read_i2c_block_data(addr,0,5)
+                    #print(chr(value_byte[0])+chr(value_byte[1]))
+                    X = str(value_byte[0]<<8|value_byte[1])
+                    Y = str(value_byte[3]<<8|value_byte[4])
+                    m = X+'a'+Y+'p'
+                    s.sendall(m.encode())
+                    #s.sendall(value_byte[1])
+                    
+
+                except IOError:
+                    #print('error');
+                    pass
+            #on_off = not on_off
+                time.sleep(0.3)    
+
+def main():
+
+    i2c = blu_i2c()
+    i2c.run()
+    #run_client('3')
+
+if __name__=="__main__":
+    main()
+
+
+
